@@ -1,0 +1,14 @@
+# Compiled Binaries
+*.exe
+*.out
+*.o
+*.obj
+
+# Persistent Data Files
+college_data.txt
+
+# OS / Editor Artifacts
+.DS_Store
+Thumbs.db
+*.swp
+*.vscode/

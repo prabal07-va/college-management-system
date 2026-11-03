@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduMatrix | College Schedule, Event & Teacher Management System</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#312e81',
+            },
+            dark: {
+              900: '#0b0f19',
+              800: '#111827',
+              700: '#1f2937',
+              600: '#374151'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #0b0f19;
+      color: #f3f4f6;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .glass-card {
+      background: rgba(17, 24, 39, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card:hover {
+      border-color: rgba(99, 102, 241, 0.3);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(17, 24, 39, 0.5);
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(99, 102, 241, 0.4);
+      border-radius: 9999px;
+    }
+    .glow-effect {
+      box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.25);
+    }
+    .slot-cell {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .slot-cell:hover {
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col custom-scrollbar">
+
+  <!-- TOP NAVBAR -->
+  <header class="sticky top-0 z-40 border-b border-gray-800 bg-[#0b0f19]/90 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-400 flex items-center justify-center text-white shadow-lg shadow-brand-500/30">
+          <i class="fa-solid fa-graduation-cap text-lg"></i>
+        </div>
+        <div>
+          <span class="font-extrabold text-lg text-white tracking-tight flex items-center gap-2">
+            EduMatrix <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-400 border border-brand-500/30">DSA in C</span>
+          </span>
+          <p class="text-xs text-gray-400 hidden sm:block">College Schedule, Event & Teacher Management</p>
+        </div>
+      </div>
+
+      <!-- Quick Nav Buttons -->
+      <nav class="hidden md:flex items-center space-x-1 bg-gray-900/80 p-1 rounded-xl border border-gray-800">
+        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn px-3 py-1.5 rounded-lg text-sm font-medium transition text-white bg-brand-600">
+          <i class="fa-solid fa-chart-pie mr-1.5"></i> Dashboard
+        </button>
+        <button onclick="switchTab('timetable')" id="nav-timetable" class="nav-btn px-3 py-1.5 rounded-lg text-sm font-medium transition text-gray-400 hover:text-white">
+          <i class="fa-solid fa-calendar-week mr-1.5"></i> Timetable
+        </button>
+        <button onclick="switchTab('teachers')" id="nav-teachers" class="nav-btn px-3 py-1.5 rounded-lg text-sm font-medium transition text-gray-400 hover:text-white">
+          <i class="fa-solid fa-chalkboard-user mr-1.5"></i> Faculty
+        </button>
+        <button onclick="switchTab('events')" id="nav-events" class="nav-btn px-3 py-1.5 rounded-lg text-sm font-medium transition text-gray-400 hover:text-white">
+          <i class="fa-solid fa-bullhorn mr-1.5"></i> Events
+        </button>
+        <button onclick="switchTab('dsa')" id="nav-dsa" class="nav-btn px-3 py-1.5 rounded-lg text-sm font-medium transition text-gray-400 hover:text-white">
+          <i class="fa-solid fa-code mr-1.5"></i> DSA & C Code
+        </button>
+      </nav>
+
+      <!-- Action buttons -->
+      <div class="flex items-center space-x-2">
+        <button onclick="resetDemoData()" title="Reset to Sample Data" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-800 hover:bg-gray-700 text-gray-300 transition border border-gray-700">
+          <i class="fa-solid fa-rotate-right mr-1"></i> Reset Demo
+        </button>
+        <button onclick="downloadCCode()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition shadow-sm flex items-center gap-1.5">
+          <i class="fa-solid fa-download"></i> Get C Code
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Bar -->
+    <div class="md:hidden flex overflow-x-auto px-4 py-2 border-t border-gray-800/60 gap-2 text-xs">
+      <button onclick="switchTab('dashboard')" class="nav-btn-mob px-3 py-1 rounded bg-brand-600 text-white whitespace-nowrap">Dashboard</button>
+      <button onclick="switchTab('timetable')" class="nav-btn-mob px-3 py-1 rounded bg-gray-800 text-gray-300 whitespace-nowrap">Timetable</button>
+      <button onclick="switchTab('teachers')" class="nav-btn-mob px-3 py-1 rounded bg-gray-800 text-gray-300 whitespace-nowrap">Faculty</button>
+      <button onclick="switchTab('events')" class="nav-btn-mob px-3 py-1 rounded bg-gray-800 text-gray-300 whitespace-nowrap">Events</button>
+      <button onclick="switchTab('dsa')" class="nav-btn-mob px-3 py-1 rounded bg-gray-800 text-gray-300 whitespace-nowrap">DSA in C</button>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- ========================================================================= -->
+    <!-- TAB 1: DASHBOARD -->
+    <!-- ========================================================================= -->
+    <section id="tab-dashboard" class="tab-pane space-y-6">
+      <!-- Welcome Hero Banner -->
+      <div class="glass-card rounded-2xl p-6 relative overflow-hidden glow-effect">
+        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-brand-600/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-semibold mb-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Academic Session 2026-2027 Active
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">College Academic Resource Hub</h1>
+            <p class="text-sm text-gray-400 mt-1 max-w-2xl">
+              An algorithmic management system demonstrating <strong>Singly Linked Lists</strong> (Teachers), 
+              <strong>2D Matrix Conflict Checking</strong> (Timetable), and <strong>Priority Queues</strong> (Events).
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <button onclick="openModal('scheduleModal')" class="px-4 py-2 rounded-xl text-sm font-semibold bg-brand-600 hover:bg-brand-500 text-white transition flex items-center gap-2 shadow-lg shadow-brand-600/20">
+              <i class="fa-solid fa-plus"></i> Schedule Class
+            </button>
+            <button onclick="openModal('eventModal')" class="px-4 py-2 rounded-xl text-sm font-semibold bg-gray-800 hover:bg-gray-700 text-white transition border border-gray-700 flex items-center gap-2">
+              <i class="fa-solid fa-calendar-plus"></i> New Event
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPI Stat Cards -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Faculty Count -->
+        <div class="glass-card p-5 rounded-2xl">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Total Faculty</span>
+            <div class="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center">
+              <i class="fa-solid fa-user-tie"></i>
+            </div>
+          </div>
+          <p id="kpi-faculty-count" class="text-2xl sm:text-3xl font-extrabold text-white mt-2">4</p>
+          <span class="text-xs text-gray-500 font-mono">Linked List Nodes</span>
+        </div>
+
+        <!-- Booked Classes -->
+        <div class="glass-card p-5 rounded-2xl">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Classes Scheduled</span>
+            <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+              <i class="fa-solid fa-chalkboard"></i>
+            </div>
+          </div>
+          <p id="kpi-classes-count" class="text-2xl sm:text-3xl font-extrabold text-white mt-2">4 / 25</p>
+          <span id="kpi-occupancy" class="text-xs text-emerald-400 font-medium">16% Matrix Occupied</span>
+        </div>
+
+        <!-- Upcoming Events -->
+        <div class="glass-card p-5 rounded-2xl">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Upcoming Events</span>
+            <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center">
+              <i class="fa-solid fa-flag"></i>
+            </div>
+          </div>
+          <p id="kpi-events-count" class="text-2xl sm:text-3xl font-extrabold text-white mt-2">4</p>
+          <span class="text-xs text-amber-400 font-medium">Priority Queue Ordered</span>
+        </div>
+
+        <!-- System DSA Status -->
+        <div class="glass-card p-5 rounded-2xl">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Conflict Engine</span>
+            <div class="w-8 h-8 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
+          </div>
+          <p class="text-base sm:text-lg font-bold text-emerald-400 mt-2 flex items-center gap-1.5">
+            <i class="fa-solid fa-circle-check text-xs"></i> Zero Collisions
+          </p>
+          <span class="text-xs text-gray-500 font-mono">2D Matrix Validation</span>
+        </div>
+      </div>
+
+      <!-- Quick Dual Preview Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Today's Schedule -->
+        <div class="lg:col-span-2 glass-card rounded-2xl p-6 space-y-4">
+          <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+            <div>
+              <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                <i class="fa-regular fa-clock text-brand-400"></i> Monday Live Schedule
+              </h2>
+              <p class="text-xs text-gray-400">Real-time slot allocation for today</p>
+            </div>
+            <button onclick="switchTab('timetable')" class="text-xs font-semibold text-brand-400 hover:text-brand-300">
+              View 5-Day Matrix &rarr;
+            </button>
+          </div>
+          <div id="dashboard-today-slots" class="space-y-2">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- Next Upcoming Events Widget -->
+        <div class="glass-card rounded-2xl p-6 space-y-4">
+          <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+            <div>
+              <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-bolt text-amber-400"></i> Next in Queue
+              </h2>
+              <p class="text-xs text-gray-400">Head elements in Priority Queue</p>
+            </div>
+            <button onclick="switchTab('events')" class="text-xs font-semibold text-amber-400 hover:text-amber-300">
+              All Events &rarr;
+            </button>
+          </div>
+          <div id="dashboard-next-events" class="space-y-3">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 2: TIMETABLE & CLASS SCHEDULES (2D MATRIX) -->
+    <!-- ========================================================================= -->
+    <section id="tab-timetable" class="tab-pane hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-800 pb-4">
+        <div>
+          <h2 class="text-2xl font-extrabold text-white flex items-center gap-2">
+            <i class="fa-solid fa-calendar-days text-brand-500"></i> Weekly Master Class Timetable
+          </h2>
+          <p class="text-xs text-gray-400">
+            Backed by a <strong>5 &times; 5 Matrix</strong> in C (<code class="text-brand-300 font-mono">ClassSlot timetable[DAYS][PERIODS]</code>). 
+            Instant $O(1)$ random access with algorithmic conflict checking.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <select id="timetable-filter-teacher" onchange="renderTimetable()" class="bg-gray-800 text-gray-300 text-xs rounded-xl px-3 py-2 border border-gray-700 focus:outline-none focus:border-brand-500">
+            <option value="ALL">All Faculty Schedules</option>
+          </select>
+          <button onclick="openModal('scheduleModal')" class="px-4 py-2 rounded-xl text-xs font-semibold bg-brand-600 hover:bg-brand-500 text-white transition flex items-center gap-1.5 shadow-md shadow-brand-600/20">
+            <i class="fa-solid fa-plus"></i> Book Slot
+          </button>
+        </div>
+      </div>
+
+      <!-- Timetable Grid -->
+      <div class="overflow-x-auto rounded-2xl border border-gray-800 glass-card">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="border-b border-gray-800 bg-gray-900/90 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+              <th class="p-4 w-32 border-r border-gray-800">Day / Period</th>
+              <th class="p-3 text-center border-r border-gray-800">
+                <span class="text-white block">Period 1</span>
+                <span class="text-[10px] text-gray-400 font-mono">09:00 - 10:00 AM</span>
+              </th>
+              <th class="p-3 text-center border-r border-gray-800">
+                <span class="text-white block">Period 2</span>
+                <span class="text-[10px] text-gray-400 font-mono">10:00 - 11:00 AM</span>
+              </th>
+              <th class="p-3 text-center border-r border-gray-800">
+                <span class="text-white block">Period 3</span>
+                <span class="text-[10px] text-gray-400 font-mono">11:15 - 12:15 PM</span>
+              </th>
+              <th class="p-3 text-center border-r border-gray-800">
+                <span class="text-white block">Period 4</span>
+                <span class="text-[10px] text-gray-400 font-mono">01:00 - 02:00 PM</span>
+              </th>
+              <th class="p-3 text-center">
+                <span class="text-white block">Period 5</span>
+                <span class="text-[10px] text-gray-400 font-mono">02:00 - 03:00 PM</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody id="timetable-matrix-body" class="divide-y divide-gray-800 text-xs">
+            <!-- Dynamically populated matrix cells -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Legend & Info -->
+      <div class="flex flex-wrap items-center justify-between text-xs text-gray-400 bg-gray-900/50 p-4 rounded-xl border border-gray-800/80 gap-3">
+        <div class="flex items-center gap-4">
+          <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-emerald-500/20 border border-emerald-500/50"></span> Scheduled Class</span>
+          <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-gray-800 border border-gray-700"></span> Available Free Slot</span>
+        </div>
+        <p class="font-mono text-[11px] text-gray-400">
+          <i class="fa-solid fa-circle-info text-brand-400 mr-1"></i> Click on any slot to view details, cancel, or book.
+        </p>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 3: FACULTY / TEACHERS (LINKED LIST) -->
+    <!-- ========================================================================= -->
+    <section id="tab-teachers" class="tab-pane hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-800 pb-4">
+        <div>
+          <h2 class="text-2xl font-extrabold text-white flex items-center gap-2">
+            <i class="fa-solid fa-chalkboard-user text-indigo-400"></i> Faculty Directory
+          </h2>
+          <p class="text-xs text-gray-400">
+            Stored as a dynamic <strong>Singly Linked List</strong> in C (<code class="text-brand-300 font-mono">TeacherNode* teacherHead</code>).
+          </p>
+        </div>
+        <button onclick="openModal('teacherModal')" class="px-4 py-2 rounded-xl text-xs font-semibold bg-brand-600 hover:bg-brand-500 text-white transition flex items-center gap-1.5 shadow-md shadow-brand-600/20">
+          <i class="fa-solid fa-user-plus"></i> Add New Faculty
+        </button>
+      </div>
+
+      <!-- Interactive Linked List Node Chain Visualizer -->
+      <div class="glass-card rounded-2xl p-5 border border-indigo-500/20 space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold text-indigo-300 uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-diagram-project"></i> Live Linked List Memory Representation
+          </span>
+          <span class="text-[11px] font-mono text-gray-400">Head Insert: O(1) | Search: O(N)</span>
+        </div>
+        <div id="linked-list-visualizer" class="flex items-center overflow-x-auto py-3 px-2 gap-3 custom-scrollbar text-xs">
+          <!-- Dynamically populated Linked list nodes -->
+        </div>
+      </div>
+
+      <!-- Teachers Card Grid -->
+      <div id="teachers-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Dynamically populated teacher cards -->
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 4: COLLEGE EVENTS (PRIORITY QUEUE) -->
+    <!-- ========================================================================= -->
+    <section id="tab-events" class="tab-pane hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-800 pb-4">
+        <div>
+          <h2 class="text-2xl font-extrabold text-white flex items-center gap-2">
+            <i class="fa-solid fa-calendar-check text-amber-400"></i> College Events & Deadlines
+          </h2>
+          <p class="text-xs text-gray-400">
+            Maintained as an <strong>Ascending Priority Queue</strong> via sorted linked list in C. Earliest dates stay at head.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <select id="event-category-filter" onchange="renderEvents()" class="bg-gray-800 text-gray-300 text-xs rounded-xl px-3 py-2 border border-gray-700 focus:outline-none focus:border-amber-500">
+            <option value="ALL">All Categories</option>
+            <option value="Symposium">Symposium</option>
+            <option value="Workshop">Workshop</option>
+            <option value="Competition">Competition / Hackathon</option>
+            <option value="Examination">Examination</option>
+          </select>
+          <button onclick="openModal('eventModal')" class="px-4 py-2 rounded-xl text-xs font-semibold bg-amber-600 hover:bg-amber-500 text-white transition flex items-center gap-1.5 shadow-md shadow-amber-600/20">
+            <i class="fa-solid fa-plus"></i> Add Event
+          </button>
+        </div>
+      </div>
+
+      <!-- Priority Queue Chronological List -->
+      <div id="events-timeline" class="space-y-3">
+        <!-- Dynamically populated event cards -->
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 5: DSA & C CODE ARCHITECTURE VIEWER -->
+    <!-- ========================================================================= -->
+    <section id="tab-dsa" class="tab-pane hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-800 pb-4">
+        <div>
+          <h2 class="text-2xl font-extrabold text-white flex items-center gap-2">
+            <i class="fa-solid fa-microchip text-emerald-400"></i> DSA Architecture & C Implementation
+          </h2>
+          <p class="text-xs text-gray-400">Detailed data structure mapping, asymptotic complexities, and source code viewer</p>
+        </div>
+        <button onclick="downloadCCode()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition flex items-center gap-1.5 shadow-md shadow-emerald-600/20">
+          <i class="fa-solid fa-file-code"></i> Download college_mgmt.c
+        </button>
+      </div>
+
+      <!-- Complexity Table -->
+      <div class="glass-card rounded-2xl p-6 space-y-4">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-table-list text-brand-400"></i> Asymptotic Complexity Reference
+        </h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border border-gray-800 rounded-xl">
+            <thead class="bg-gray-900/80 text-gray-300">
+              <tr class="border-b border-gray-800 font-semibold">
+                <th class="p-3">Module</th>
+                <th class="p-3">Data Structure</th>
+                <th class="p-3">Primary Operations</th>
+                <th class="p-3">Time Complexity</th>
+                <th class="p-3">Space Complexity</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-800 text-gray-400 font-mono">
+              <tr>
+                <td class="p-3 text-white font-sans font-medium">Faculty Records</td>
+                <td class="p-3 text-indigo-400">Singly Linked List</td>
+                <td class="p-3">Add Head / Search / Delete</td>
+                <td class="p-3"><span class="text-emerald-400">O(1)</span> insert, <span class="text-amber-400">O(N)</span> search</td>
+                <td class="p-3">O(N) dynamic</td>
+              </tr>
+              <tr>
+                <td class="p-3 text-white font-sans font-medium">Class Timetable</td>
+                <td class="p-3 text-emerald-400">2D Array Matrix (5x5)</td>
+                <td class="p-3">Direct Slot Access & Conflict Check</td>
+                <td class="p-3"><span class="text-emerald-400">O(1)</span> slot, <span class="text-indigo-400">O(D&times;P)</span> teacher check</td>
+                <td class="p-3">O(D&times;P) fixed</td>
+              </tr>
+              <tr>
+                <td class="p-3 text-white font-sans font-medium">College Events</td>
+                <td class="p-3 text-amber-400">Priority Queue (Sorted List)</td>
+                <td class="p-3">Sorted Insertion by Date</td>
+                <td class="p-3"><span class="text-amber-400">O(K)</span> insert, <span class="text-emerald-400">O(1)</span> peek earliest</td>
+                <td class="p-3">O(K) dynamic</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Viva Q&A Accordion -->
+      <div class="glass-card rounded-2xl p-6 space-y-4">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-graduation-cap text-amber-400"></i> Exam & Viva Defense Q&A
+        </h3>
+        <div class="space-y-3 text-xs">
+          <div class="p-4 rounded-xl bg-gray-900/60 border border-gray-800">
+            <h4 class="font-bold text-white mb-1">Q1: Why choose a 2D Array for class schedules instead of a linked list?</h4>
+            <p class="text-gray-300">
+              <strong>Answer:</strong> College timetables have fixed days and periods (e.g. 5 days &times; 5 slots). A 2D array gives immediate 
+              <strong>\(O(1)\)</strong> index lookup (<code class="text-brand-300">timetable[day][period]</code>) to verify slot occupancy without traversing elements.
+            </p>
+          </div>
+          <div class="p-4 rounded-xl bg-gray-900/60 border border-gray-800">
+            <h4 class="font-bold text-white mb-1">Q2: How is the Priority Queue implemented for Events?</h4>
+            <p class="text-gray-300">
+              <strong>Answer:</strong> It is implemented via a sorted linked list using a composite timestamp key (\(Year \times 10000 + Month \times 100 + Day\)). 
+              Incoming events are inserted in ascending chronological order (\(O(K)\) insertion), making the head element always the earliest upcoming event (\(O(1)\)).
+            </p>
+          </div>
+          <div class="p-4 rounded-xl bg-gray-900/60 border border-gray-800">
+            <h4 class="font-bold text-white mb-1">Q3: How does the system handle teacher conflict detection?</h4>
+            <p class="text-gray-300">
+              <strong>Answer:</strong> Before booking, the algorithm inspects if <code class="text-brand-300">timetable[day][period].isBooked == true</code>, 
+              and verifies if the assigned <code class="text-brand-300">teacherId</code> is already occupied in that exact time slot.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- C Code Embedded Viewer -->
+      <div class="glass-card rounded-2xl p-6 space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-file-lines text-brand-400"></i> college_mgmt.c Source Preview
+          </h3>
+          <span class="text-xs font-mono text-gray-400">Standard C99 / C11</span>
+        </div>
+        <pre class="bg-gray-950 p-4 rounded-xl text-[11px] font-mono text-gray-300 overflow-x-auto max-h-96 custom-scrollbar border border-gray-800" id="c-code-preview">
+/* Loading C code preview... */
+        </pre>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- MODALS -->
+  <!-- ========================================================================= -->
+
+  <!-- 1. SCHEDULE CLASS MODAL -->
+  <div id="scheduleModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="glass-card rounded-2xl max-w-md w-full p-6 border border-gray-700 space-y-4">
+      <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-calendar-plus text-brand-400"></i> Schedule a Class
+        </h3>
+        <button onclick="closeModal('scheduleModal')" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form id="form-schedule-class" onsubmit="handleScheduleSubmit(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-medium text-gray-300 mb-1">Day of Week</label>
+          <select id="modal-sched-day" required class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-white">
+            <option value="0">Monday</option>
+            <option value="1">Tuesday</option>
+            <option value="2">Wednesday</option>
+            <option value="3">Thursday</option>
+            <option value="4">Friday</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-medium text-gray-300 mb-1">Time Slot / Period</label>
+          <select id="modal-sched-period" required class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-white">
+            <option value="0">Period 1 (09:00 - 10:00 AM)</option>
+            <option value="1">Period 2 (10:00 - 11:00 AM)</option>
+            <option value="2">Period 3 (11:15 - 12:15 PM)</option>
+            <option value="3">Period 4 (01:00 - 02:00 PM)</option>
+            <option value="4">Period 5 (02:00 - 03:00 PM)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-medium text-gray-300 mb-1">Assign Teacher (Faculty)</label>
+          <select id="modal-sched-teacher" required class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-white">
+            <!-- Populated via JS -->
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-medium text-gray-300 mb-1">Subject / Course Name</label>
+          <input type="text" id="modal-sched-subject" required placeholder="e.g. Data Structures & Algorithms" class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-white">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-medium text-gray-300 mb-1">Room / Lab No.</label>
+            <input type="text" id="modal-sched-room" required placeholder="e.g. Lab-302" class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-white">
+          </div>
+          <div>
+            <label class="block font-medium text-gray-300 mb-1">Batch / Section</label>
+            <input type="text" id="modal-sched-batch" required placeholder="e.g. CS-3A" class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-white">
+          </div>
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeModal('scheduleModal')" class="px-3 py-2 rounded-xl bg-gray-800 text-gray-300 hover:bg-gray-700">Cancel</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold flex items-center gap-1.5">
+            <i class="fa-solid fa-check"></i> Confirm & Validate
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. ADD TEACHER MODAL -->
+  <div id="teacherModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="glass-card rounded-2xl max-w-md w-full p-6 border border-gray-700 space-y-4">
+      <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-user-plus text-indigo-400"></i> Add New Faculty Member
+        </h3>
+        <button onclick="closeModal('teacherModal')" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form id="form-add-teacher" onsubmit="handleAddTeacherSubmit(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-medium text-gray-300 mb-1">Faculty ID (Numeric)</label>
+          <input type="number" id="modal-teacher-id" required placeholder="e.g. 105" class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-white">
+        </div>
+        <div>
+          <label class="block font-medium text-gray-300 mb-1">Full Name</label>
+          <input type="text" id="modal-teacher-name" required placeholder="e.g. Dr. Grace Hopper" class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-white">
+        </div>
+        <div>
+          <label class="block font-medium text-gray-300 mb-1">Department</label>
+          <input type="text" id="modal-teacher-dept" required placeholder="e.g. Computer Science & Engg." class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-white">
+        </div>
+        <div>
+          <label class="block font-medium text-gray-300 mb-1">Email Address</label>
+          <input type="email" id="modal-teacher-email" required placeholder="e.g. grace@college.edu" class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-white">
+        </div>
+        <div>
+          <label class="block font-medium text-gray-300 mb-1">Designation</label>
+          <input type="text" id="modal-teacher-desig" required placeholder="e.g. Associate Professor" class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-white">
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeModal('teacherModal')" class="px-3 py-2 rounded-xl bg-gray-800 text-gray-300 hover:bg-gray-700">Cancel</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold flex items-center gap-1.5">
+            <i class="fa-solid fa-plus"></i> Add to Linked List
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. ADD EVENT MODAL -->
+  <div id="eventModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="glass-card rounded-2xl max-w-md w-full p-6 border border-gray-700 space-y-4">
+      <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-calendar-plus text-amber-400"></i> Schedule College Event
+        </h3>
+        <button onclick="closeModal('eventModal')" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form id="form-add-event" onsubmit="handleAddEventSubmit(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-medium text-gray-300 mb-1">Event ID</label>
+          <input type="number" id="modal-event-id" required placeholder="e.g. 505" class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-white">
+        </div>
+        <div>
+          <label class="block font-medium text-gray-300 mb-1">Event Title</label>
+          <input type="text" id="modal-event-title" required placeholder="e.g. Annual Robotics Championship" class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-white">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-medium text-gray-300 mb-1">Date</label>
+            <input type="date" id="modal-event-date" required class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-white">
+          </div>
+          <div>
+            <label class="block font-medium text-gray-300 mb-1">Time</label>
+            <input type="text" id="modal-event-time" required placeholder="e.g. 10:30 AM" class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-white">
+          </div>
+        </div>
+        <div>
+          <label class="block font-medium text-gray-300 mb-1">Venue / Auditorium</label>
+          <input type="text" id="modal-event-venue" required placeholder="e.g. Main Auditorium Hall" class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-white">
+        </div>
+        <div>
+          <label class="block font-medium text-gray-300 mb-1">Category</label>
+          <select id="modal-event-cat" required class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-white">
+            <option value="Symposium">Symposium</option>
+            <option value="Workshop">Workshop</option>
+            <option value="Competition">Competition / Hackathon</option>
+            <option value="Examination">Examination</option>
+            <option value="Cultural">Cultural Fest</option>
+          </select>
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeModal('eventModal')" class="px-3 py-2 rounded-xl bg-gray-800 text-gray-300 hover:bg-gray-700">Cancel</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-semibold flex items-center gap-1.5">
+            <i class="fa-solid fa-clock"></i> Queue Event
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 space-y-2"></div>
+
+  <!-- JAVASCRIPT APPLICATION LOGIC -->
+  <script>
+    /* =========================================================================
+     * DATA MODEL & INITIAL SEEDING
+     * ========================================================================= */
+    const DAYS_CONFIG = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+    const PERIODS_CONFIG = [
+      { id: 0, time: "09:00 - 10:00 AM", label: "Period 1" },
+      { id: 1, time: "10:00 - 11:00 AM", label: "Period 2" },
+      { id: 2, time: "11:15 - 12:15 PM", label: "Period 3" },
+      { id: 3, time: "01:00 - 02:00 PM", label: "Period 4" },
+      { id: 4, time: "02:00 - 03:00 PM", label: "Period 5" }
+    ];
+
+    const DEFAULT_TEACHERS = [
+      { id: 101, name: "Dr. Robert Smith", dept: "Computer Science", email: "rsmith@college.edu", desig: "Professor & HOD" },
+      { id: 102, name: "Prof. Anita Sharma", dept: "Information Tech", email: "asharma@college.edu", desig: "Associate Professor" },
+      { id: 103, name: "Dr. Alan Turing", dept: "Mathematics", email: "aturing@college.edu", desig: "Visiting Professor" },
+      { id: 104, name: "Prof. David Miller", dept: "Electronics", email: "dmiller@college.edu", desig: "Assistant Professor" }
+    ];
+
+    const DEFAULT_TIMETABLE = [
+      // Monday
+      [
+        { isBooked: true, teacherId: 101, subject: "Data Structures", room: "Lab-101", batch: "CS-3A" },
+        { isBooked: true, teacherId: 103, subject: "Discrete Math", room: "LH-204", batch: "CS-3A" },
+        { isBooked: false, teacherId: null, subject: "FREE", room: "-", batch: "-" },
+        { isBooked: false, teacherId: null, subject: "FREE", room: "-", batch: "-" },
+        { isBooked: false, teacherId: null, subject: "FREE", room: "-", batch: "-" }
+      ],
+      // Tuesday
+      [
+        { isBooked: false, teacherId: null, subject: "FREE", room: "-", batch: "-" },
+        { isBooked: false, teacherId: null, subject: "FREE", room: "-", batch: "-" },
+        { isBooked: true, teacherId: 102, subject: "Database Systems", room: "Lab-102", batch: "IT-3B" },
+        { isBooked: false, teacherId: null, subject: "FREE", room: "-", batch: "-" },
+        { isBooked: false, teacherId: null, subject: "FREE", room: "-", batch: "-" }
+      ],
+      // Wednesday
+      [
+        { isBooked: true, teacherId: 104, subject: "Digital Logic", room: "LH-101", batch: "EC-3A" },
+        { isBooked: false, teacherId: null, subject: "FREE", room: "-", batch: "-" },
+        { isBooked: false, teacherId: null, subject: "FREE", room: "-", batch: "-" },
+        { isBooked: false, teacherId: null, subject: "FREE", room: "-", batch: "-" },
+        { isBooked: false, teacherId: null, subject: "FREE", room: "-", batch: "-" }
+      ],
+      // Thursday
+      [
+        { isBooked: false, teacherId: null, subject: "FREE", room: "-", batch: "-" },
+        { isBooked: false, teacherId: null, subject: "FREE", room: "-", batch: "-" },
+        { isBooked: false, teacherId: null, subject: "FREE", room: "-", batch: "-" },
+        { isBooked: false, teacherId: null, subject: "FREE", room: "-", batch: "-" },
+        { isBooked: false, teacherId: null, subject: "FREE", room: "-", batch: "-" }
+      ],
+      // Friday
+      [
+        { isBooked: false, teacherId: null, subject: "FREE", room: "-", batch: "-" },
+        { isBooked: false, teacherId: null, subject: "FREE", room: "-", batch: "-" },
+        { isBooked: false, teacherId: null, subject: "FREE", room: "-", batch: "-" },
+        { isBooked: false, teacherId: null, subject: "FREE", room: "-", batch: "-" },
+        { isBooked: false, teacherId: null, subject: "FREE", room: "-", batch: "-" }
+      ]
+    ];
+
+    const DEFAULT_EVENTS = [
+      { eventId: 502, title: "AI & Machine Learning Workshop", date: "2026-11-10", time: "10:00 AM", venue: "Seminar Hall B", category: "Workshop" },
+      { eventId: 503, title: "Annual Coding Hackathon", date: "2026-11-15", time: "08:00 AM", venue: "Innovation Lab", category: "Competition" },
+      { eventId: 501, title: "National Tech Symposium", date: "2026-11-20", time: "09:30 AM", venue: "Main Auditorium", category: "Symposium" },
+      { eventId: 504, title: "End-Semester Practical Exams", date: "2026-12-05", time: "09:00 AM", venue: "Exam Hall 1-4", category: "Examination" }
+    ];
+
+    // State Variables
+    let teachers = [];
+    let timetable = [];
+    let events = [];
+
+    function loadState() {
+      const savedTeachers = localStorage.getItem("edumatrix_teachers");
+      const savedTimetable = localStorage.getItem("edumatrix_timetable");
+      const savedEvents = localStorage.getItem("edumatrix_events");
+
+      teachers = savedTeachers ? JSON.parse(savedTeachers) : JSON.parse(JSON.stringify(DEFAULT_TEACHERS));
+      timetable = savedTimetable ? JSON.parse(savedTimetable) : JSON.parse(JSON.stringify(DEFAULT_TIMETABLE));
+      events = savedEvents ? JSON.parse(savedEvents) : JSON.parse(JSON.stringify(DEFAULT_EVENTS));
+      sortEvents();
+    }
+
+    function saveState() {
+      localStorage.setItem("edumatrix_teachers", JSON.stringify(teachers));
+      localStorage.setItem("edumatrix_timetable", JSON.stringify(timetable));
+      localStorage.setItem("edumatrix_events", JSON.stringify(events));
+      updateKPIs();
+    }
+
+    function resetDemoData() {
+      if (confirm("Reset all timetable slots, faculty, and events to default demo data?")) {
+        localStorage.clear();
+        loadState();
+        renderAll();
+        showToast("System reset to initial demonstration state", "success");
+      }
+    }
+
+    /* =========================================================================
+     * NAVIGATION & TABS
+     * ========================================================================= */
+    function switchTab(tabId) {
+      document.querySelectorAll(".tab-pane").forEach(el => el.classList.add("hidden"));
+      const target = document.getElementById("tab-" + tabId);
+      if (target) target.classList.remove("hidden");
+
+      // Update desktop buttons
+      document.querySelectorAll(".nav-btn").forEach(btn => {
+        btn.classList.remove("bg-brand-600", "text-white");
+        btn.classList.add("text-gray-400");
+      });
+      const activeBtn = document.getElementById("nav-" + tabId);
+      if (activeBtn) {
+        activeBtn.classList.add("bg-brand-600", "text-white");
+        activeBtn.classList.remove("text-gray-400");
+      }
+
+      // Update mobile buttons
+      document.querySelectorAll(".nav-btn-mob").forEach(btn => {
+        if (btn.innerText.toLowerCase().includes(tabId)) {
+          btn.className = "nav-btn-mob px-3 py-1 rounded bg-brand-600 text-white whitespace-nowrap";
+        } else {
+          btn.className = "nav-btn-mob px-3 py-1 rounded bg-gray-800 text-gray-300 whitespace-nowrap";
+        }
+      });
+
+      renderAll();
+    }
+
+    /* =========================================================================
+     * MODAL HELPERS & TOASTS
+     * ========================================================================= */
+    function openModal(id) {
+      populateTeacherDropdowns();
+      const m = document.getElementById(id);
+      if (m) m.classList.remove("hidden");
+    }
+
+    function closeModal(id) {
+      const m = document.getElementById(id);
+      if (m) m.classList.add("hidden");
+    }
+
+    function showToast(message, type = "info") {
+      const container = document.getElementById("toast-container");
+      const toast = document.createElement("div");
+
+      let bg = "bg-gray-800 border-gray-700 text-white";
+      let icon = "fa-circle-info text-blue-400";
+      if (type === "success") {
+        bg = "bg-emerald-950/90 border-emerald-600/50 text-emerald-200";
+        icon = "fa-circle-check text-emerald-400";
+      } else if (type === "error" || type === "conflict") {
+        bg = "bg-rose-950/90 border-rose-600/50 text-rose-200";
+        icon = "fa-triangle-exclamation text-rose-400";
+      }
+
+      toast.className = `flex items-center gap-2.5 px-4 py-3 rounded-xl border backdrop-blur-md shadow-2xl text-xs transition transform duration-300 translate-y-2 opacity-0 ${bg}`;
+      toast.innerHTML = `<i class="fa-solid ${icon} text-sm"></i> <span>${message}</span>`;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.remove("translate-y-2", "opacity-0");
+      }, 10);
+
+      setTimeout(() => {
+        toast.classList.add("opacity-0", "translate-y-2");
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    /* =========================================================================
+     * RENDERING LOGIC
+     * ========================================================================= */
+    function getTeacher(id) {
+      return teachers.find(t => t.id == id);
+    }
+
+    function populateTeacherDropdowns() {
+      const select = document.getElementById("modal-sched-teacher");
+      const filterSelect = document.getElementById("timetable-filter-teacher");
+
+      let opts = teachers.map(t => `<option value="${t.id}">${t.name} (${t.dept})</option>`).join("");
+      if (select) select.innerHTML = opts;
+
+      if (filterSelect) {
+        const curVal = filterSelect.value;
+        filterSelect.innerHTML = `<option value="ALL">All Faculty Schedules</option>` + opts;
+        filterSelect.value = curVal;
+      }
+    }
+
+    function updateKPIs() {
+      // Faculty Count
+      document.getElementById("kpi-faculty-count").innerText = teachers.length;
+
+      // Booked Count
+      let booked = 0;
+      timetable.forEach(row => row.forEach(slot => { if (slot.isBooked) booked++; }));
+      document.getElementById("kpi-classes-count").innerText = `${booked} / 25`;
+      const pct = Math.round((booked / 25) * 100);
+      document.getElementById("kpi-occupancy").innerText = `${pct}% Matrix Occupied`;
+
+      // Events Count
+      document.getElementById("kpi-events-count").innerText = events.length;
+    }
+
+    // 1. Dashboard Render
+    function renderDashboard() {
+      // Render Today's (Monday's) classes
+      const container = document.getElementById("dashboard-today-slots");
+      const monSlots = timetable[0] || [];
+
+      let html = "";
+      monSlots.forEach((slot, idx) => {
+        const period = PERIODS_CONFIG[idx];
+        if (slot.isBooked) {
+          const t = getTeacher(slot.teacherId);
+          html += `
+            <div class="flex items-center justify-between p-3 rounded-xl bg-gray-900/60 border border-gray-800">
+              <div class="flex items-center gap-3">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                <div>
+                  <h4 class="font-bold text-white text-xs">${slot.subject} <span class="text-gray-400 font-normal">(${slot.batch})</span></h4>
+                  <p class="text-[11px] text-gray-400">Room: <span class="text-gray-300 font-mono">${slot.room}</span> &bull; Faculty: <span class="text-indigo-400">${t ? t.name : 'Unknown'}</span></p>
+                </div>
+              </div>
+              <span class="text-[11px] font-mono text-gray-400 px-2.5 py-1 rounded-lg bg-gray-800 border border-gray-700">${period.time}</span>
+            </div>
+          `;
+        } else {
+          html += `
+            <div class="flex items-center justify-between p-3 rounded-xl bg-gray-900/30 border border-gray-800/40 text-gray-500">
+              <span class="flex items-center gap-3 text-xs"><span class="w-2.5 h-2.5 rounded-full bg-gray-700"></span> Free Period</span>
+              <span class="text-[11px] font-mono text-gray-500">${period.time}</span>
+            </div>
+          `;
+        }
+      });
+      container.innerHTML = html;
+
+      // Next in queue events
+      const eventContainer = document.getElementById("dashboard-next-events");
+      if (events.length === 0) {
+        eventContainer.innerHTML = `<p class="text-xs text-gray-500">No events currently queued.</p>`;
+      } else {
+        eventContainer.innerHTML = events.slice(0, 3).map((e, idx) => `
+          <div class="p-3 rounded-xl bg-gray-900/60 border border-gray-800 flex items-start justify-between gap-2">
+            <div>
+              <div class="flex items-center gap-1.5 mb-1">
+                <span class="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30">Priority #${idx + 1}</span>
+                <span class="text-[11px] text-gray-400 font-mono">${e.date}</span>
+              </div>
+              <h4 class="font-bold text-white text-xs">${e.title}</h4>
+              <p class="text-[11px] text-gray-400">${e.venue} &bull; ${e.time}</p>
+            </div>
+          </div>
+        `).join("");
+      }
+    }
+
+    // 2. Timetable Render
+    function renderTimetable() {
+      const filterT = document.getElementById("timetable-filter-teacher") ? document.getElementById("timetable-filter-teacher").value : "ALL";
+      const tbody = document.getElementById("timetable-matrix-body");
+      let html = "";
+
+      DAYS_CONFIG.forEach((dayName, dIdx) => {
+        html += `<tr class="border-b border-gray-800 hover:bg-gray-900/30 transition">`;
+        html += `<td class="p-3 font-semibold text-white bg-gray-900/50 border-r border-gray-800">${dayName}</td>`;
+
+        for (let pIdx = 0; pIdx < 5; pIdx++) {
+          const slot = timetable[dIdx][pIdx];
+          const isFilterMatch = (filterT === "ALL") || (slot.isBooked && slot.teacherId == filterT);
+
+          if (slot.isBooked && isFilterMatch) {
+            const t = getTeacher(slot.teacherId);
+            html += `
+              <td class="p-2 border-r border-gray-800 slot-cell">
+                <div class="p-2.5 rounded-xl bg-indigo-950/40 border border-indigo-500/30 flex flex-col justify-between h-24 hover:border-indigo-400 transition">
+                  <div>
+                    <div class="flex items-center justify-between mb-1">
+                      <span class="px-1.5 py-0.2 rounded text-[10px] font-bold bg-indigo-500/30 text-indigo-300">${slot.batch}</span>
+                      <button onclick="cancelSlot(${dIdx}, ${pIdx})" title="Cancel Class" class="text-gray-500 hover:text-rose-400 text-xs">
+                        <i class="fa-solid fa-trash-can"></i>
+                      </button>
+                    </div>
+                    <div class="font-bold text-white text-xs truncate" title="${slot.subject}">${slot.subject}</div>
+                  </div>
+                  <div class="text-[10px] text-gray-400 flex items-center justify-between border-t border-gray-800/80 pt-1 mt-1">
+                    <span class="truncate max-w-[90px]" title="${t ? t.name : 'Unknown'}">${t ? t.name : 'Unknown'}</span>
+                    <span class="font-mono text-gray-400">${slot.room}</span>
+                  </div>
+                </div>
+              </td>
+            `;
+          } else if (slot.isBooked && !isFilterMatch) {
+            // Booked by other teacher when filtered
+            html += `
+              <td class="p-2 border-r border-gray-800 text-center">
+                <div class="p-2 rounded-xl bg-gray-900/20 border border-gray-800 flex items-center justify-center h-24 text-gray-600 text-[11px]">
+                  Other Faculty
+                </div>
+              </td>
+            `;
+          } else {
+            // Free slot
+            html += `
+              <td class="p-2 border-r border-gray-800 text-center">
+                <button onclick="quickBookSlot(${dIdx}, ${pIdx})" class="w-full h-24 rounded-xl border border-dashed border-gray-800 hover:border-brand-500 hover:bg-brand-500/5 transition flex flex-col items-center justify-center text-gray-500 hover:text-brand-300 group">
+                  <i class="fa-solid fa-plus text-xs mb-1 group-hover:scale-125 transition-transform"></i>
+                  <span class="text-[10px]">Free Slot</span>
+                </button>
+              </td>
+            `;
+          }
+        }
+        html += `</tr>`;
+      });
+
+      tbody.innerHTML = html;
+    }
+
+    function quickBookSlot(day, period) {
+      document.getElementById("modal-sched-day").value = day;
+      document.getElementById("modal-sched-period").value = period;
+      openModal("scheduleModal");
+    }
+
+    function cancelSlot(day, period) {
+      if (confirm(`Cancel class scheduled on ${DAYS_CONFIG[day]} at ${PERIODS_CONFIG[period].time}?`)) {
+        timetable[day][period] = { isBooked: false, teacherId: null, subject: "FREE", room: "-", batch: "-" };
+        saveState();
+        renderAll();
+        showToast("Class cancelled & slot returned to FREE pool", "info");
+      }
+    }
+
+    // 3. Teachers Render
+    function renderTeachers() {
+      // 3A. Linked List Graphical Visualizer
+      const viz = document.getElementById("linked-list-visualizer");
+      if (teachers.length === 0) {
+        viz.innerHTML = `<span class="text-gray-500 font-mono">Head -> NULL (Empty Linked List)</span>`;
+      } else {
+        let vizHtml = `<div class="px-2 py-1 rounded bg-brand-500/20 border border-brand-500/40 text-brand-300 font-mono font-bold text-[11px]">HEAD</div>`;
+        teachers.forEach(t => {
+          vizHtml += `
+            <i class="fa-solid fa-arrow-right text-gray-600"></i>
+            <div class="flex items-center gap-2 p-2 rounded-xl bg-gray-900 border border-indigo-500/40 whitespace-nowrap">
+              <span class="w-6 h-6 rounded-lg bg-indigo-600/30 text-indigo-300 flex items-center justify-center font-bold text-[10px] font-mono">${t.id}</span>
+              <div>
+                <p class="font-bold text-white text-[11px] leading-tight">${t.name}</p>
+                <p class="text-[9px] text-gray-400 font-mono">${t.dept}</p>
+              </div>
+            </div>
+          `;
+        });
+        vizHtml += `<i class="fa-solid fa-arrow-right text-gray-600"></i><span class="px-2 py-1 rounded bg-gray-800 text-gray-400 font-mono text-[11px]">NULL</span>`;
+        viz.innerHTML = vizHtml;
+      }
+
+      // 3B. Teachers Cards
+      const container = document.getElementById("teachers-grid");
+      if (teachers.length === 0) {
+        container.innerHTML = `<div class="col-span-3 text-center py-10 text-gray-500">No faculty members found.</div>`;
+        return;
+      }
+
+      container.innerHTML = teachers.map(t => {
+        // Count assigned classes
+        let assigned = 0;
+        timetable.forEach(row => row.forEach(slot => { if (slot.isBooked && slot.teacherId == t.id) assigned++; }));
+
+        return `
+          <div class="glass-card rounded-2xl p-5 border border-gray-800 hover:border-indigo-500/40 transition space-y-4">
+            <div class="flex items-start justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white font-bold text-sm shadow-md">
+                  ${t.name.split(' ').map(n=>n[0]).join('')}
+                </div>
+                <div>
+                  <h3 class="font-bold text-white text-sm">${t.name}</h3>
+                  <p class="text-xs text-indigo-400 font-medium">${t.desig}</p>
+                </div>
+              </div>
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-gray-800 text-gray-300 border border-gray-700">ID: ${t.id}</span>
+            </div>
+
+            <div class="space-y-1.5 text-xs text-gray-400">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-building text-gray-500 w-4"></i> <span>${t.dept}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-envelope text-gray-500 w-4"></i> <span class="font-mono text-gray-300">${t.email}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-clock text-gray-500 w-4"></i> <span>Assigned Load: <strong class="text-emerald-400">${assigned}</strong> periods / week</span>
+              </div>
+            </div>
+
+            <div class="pt-2 border-t border-gray-800/80 flex items-center justify-between">
+              <button onclick="viewTeacherTimetable(${t.id})" class="text-xs font-semibold text-brand-400 hover:text-brand-300 flex items-center gap-1">
+                <i class="fa-solid fa-calendar-week"></i> View Schedule
+              </button>
+              <button onclick="deleteTeacher(${t.id})" title="Delete Faculty" class="text-xs text-gray-500 hover:text-rose-400">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function viewTeacherTimetable(id) {
+      switchTab('timetable');
+      const filterSelect = document.getElementById("timetable-filter-teacher");
+      if (filterSelect) {
+        filterSelect.value = id;
+        renderTimetable();
+      }
+    }
+
+    function deleteTeacher(id) {
+      const t = getTeacher(id);
+      if (confirm(`Remove faculty member ${t ? t.name : id}? This will also cancel all their scheduled classes.`)) {
+        teachers = teachers.filter(item => item.id != id);
+        // Free slots booked by this teacher
+        for (let d = 0; d < 5; d++) {
+          for (let p = 0; p < 5; p++) {
+            if (timetable[d][p].isBooked && timetable[d][p].teacherId == id) {
+              timetable[d][p] = { isBooked: false, teacherId: null, subject: "FREE", room: "-", batch: "-" };
+            }
+          }
+        }
+        saveState();
+        renderAll();
+        showToast("Faculty deleted and schedule freed", "info");
+      }
+    }
+
+    // 4. Events Render (Priority Queue)
+    function sortEvents() {
+      // Sort in ascending order by date (Priority Queue representation)
+      events.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    }
+
+    function renderEvents() {
+      const cat = document.getElementById("event-category-filter") ? document.getElementById("event-category-filter").value : "ALL";
+      const container = document.getElementById("events-timeline");
+      
+      const filtered = (cat === "ALL") ? events : events.filter(e => e.category === cat);
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="text-center py-12 text-gray-500 text-xs">No college events found for this filter.</div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map((e, idx) => {
+        const eventDate = new Date(e.date);
+        const dayNum = eventDate.getDate();
+        const monthStr = eventDate.toLocaleString('default', { month: 'short' }).toUpperCase();
+
+        return `
+          <div class="glass-card rounded-2xl p-4 border border-gray-800 hover:border-amber-500/30 transition flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+              <!-- Date Badge -->
+              <div class="w-14 h-14 rounded-xl bg-amber-500/10 border border-amber-500/30 flex flex-col items-center justify-center text-amber-300 font-bold shrink-0">
+                <span class="text-[10px] tracking-wider text-amber-400 font-mono">${monthStr}</span>
+                <span class="text-xl leading-none">${dayNum}</span>
+              </div>
+
+              <!-- Details -->
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-gray-800 text-amber-400 border border-gray-700">Priority #${idx + 1}</span>
+                  <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-gray-800 text-gray-300 border border-gray-700">${e.category}</span>
+                </div>
+                <h3 class="text-sm font-bold text-white">${e.title}</h3>
+                <p class="text-xs text-gray-400 mt-0.5">
+                  <i class="fa-regular fa-clock mr-1 text-gray-500"></i> ${e.time} &bull; 
+                  <i class="fa-solid fa-location-dot ml-2 mr-1 text-gray-500"></i> ${e.venue}
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 self-end sm:self-center">
+              <span class="text-[11px] font-mono text-gray-500">ID: ${e.eventId}</span>
+              <button onclick="deleteEvent(${e.eventId})" title="Remove Event" class="text-xs text-gray-500 hover:text-rose-400 px-2 py-1 rounded bg-gray-800/60 border border-gray-700">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function deleteEvent(id) {
+      if (confirm(`Remove event with ID ${id} from priority queue?`)) {
+        events = events.filter(e => e.eventId != id);
+        saveState();
+        renderAll();
+        showToast("Event removed from queue", "info");
+      }
+    }
+
+    // 5. C Code Preview Loader
+    function loadCCodePreview() {
+      const codePreview = document.getElementById("c-code-preview");
+      if (codePreview) {
+        codePreview.innerText = `// Compile using: gcc college_mgmt.c -o college_mgmt
+// Run using    : ./college_mgmt (or college_mgmt.exe on Windows)
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+
+#define DAYS 5
+#define PERIODS 5
+
+// 1. Singly Linked List Node for Teachers
+typedef struct TeacherNode {
+    int id;
+    char name[60];
+    char department[40];
+    char email[60];
+    char designation[40];
+    struct TeacherNode* next;
+} TeacherNode;
+
+// 2. 2D Array Matrix for Class Timetable
+typedef struct ClassSlot {
+    bool isBooked;
+    char subject[40];
+    int teacherId;
+    char room[20];
+    char batch[20];
+} ClassSlot;
+
+// 3. Priority Queue (Sorted Linked List) for College Events
+typedef struct EventNode {
+    int eventId;
+    char title[80];
+    int year, month, day;
+    char time[20], venue[40], category[30];
+    struct EventNode* next;
+} EventNode;
+
+// Conflict Checking:
+bool checkTeacherConflict(int teacherId, int day, int period) {
+    if (timetable[day][period].isBooked && timetable[day][period].teacherId == teacherId) {
+        return true; // Teacher double-booking conflict detected!
+    }
+    return false;
+}
+... [Full code in college_mgmt.c]`;
+      }
+    }
+
+    function renderAll() {
+      populateTeacherDropdowns();
+      updateKPIs();
+      renderDashboard();
+      renderTimetable();
+      renderTeachers();
+      renderEvents();
+      loadCCodePreview();
+    }
+
+    /* =========================================================================
+     * FORM HANDLERS & CONFLICT CHECKING
+     * ========================================================================= */
+
+    // Schedule Class Submission
+    function handleScheduleSubmit(e) {
+      e.preventDefault();
+      const day = parseInt(document.getElementById("modal-sched-day").value);
+      const period = parseInt(document.getElementById("modal-sched-period").value);
+      const teacherId = parseInt(document.getElementById("modal-sched-teacher").value);
+      const subject = document.getElementById("modal-sched-subject").value.trim();
+      const room = document.getElementById("modal-sched-room").value.trim();
+      const batch = document.getElementById("modal-sched-batch").value.trim();
+
+      // Conflict Check 1: Is slot already booked?
+      if (timetable[day][period].isBooked) {
+        showToast(`[CONFLICT] Slot on ${DAYS_CONFIG[day]} (${PERIODS_CONFIG[period].time}) is already occupied!`, "conflict");
+        return;
+      }
+
+      // Conflict Check 2: Is teacher double-booked in this slot?
+      if (timetable[day][period].teacherId == teacherId) {
+        const t = getTeacher(teacherId);
+        showToast(`[CONFLICT] Faculty ${t ? t.name : teacherId} is already teaching in this period!`, "conflict");
+        return;
+      }
+
+      // Assign slot
+      timetable[day][period] = {
+        isBooked: true,
+        teacherId: teacherId,
+        subject: subject,
+        room: room,
+        batch: batch
+      };
+
+      saveState();
+      renderAll();
+      closeModal("scheduleModal");
+      document.getElementById("form-schedule-class").reset();
+      showToast(`Class successfully scheduled for ${subject}!`, "success");
+    }
+
+    // Add Teacher Submission
+    function handleAddTeacherSubmit(e) {
+      e.preventDefault();
+      const id = parseInt(document.getElementById("modal-teacher-id").value);
+      const name = document.getElementById("modal-teacher-name").value.trim();
+      const dept = document.getElementById("modal-teacher-dept").value.trim();
+      const email = document.getElementById("modal-teacher-email").value.trim();
+      const desig = document.getElementById("modal-teacher-desig").value.trim();
+
+      if (getTeacher(id)) {
+        showToast(`Teacher ID ${id} is already registered!`, "conflict");
+        return;
+      }
+
+      // Insert at head of Linked List
+      teachers.unshift({ id, name, dept, email, desig });
+      saveState();
+      renderAll();
+      closeModal("teacherModal");
+      document.getElementById("form-add-teacher").reset();
+      showToast(`Faculty ${name} inserted into Linked List!`, "success");
+    }
+
+    // Add Event Submission
+    function handleAddEventSubmit(e) {
+      e.preventDefault();
+      const id = parseInt(document.getElementById("modal-event-id").value);
+      const title = document.getElementById("modal-event-title").value.trim();
+      const date = document.getElementById("modal-event-date").value;
+      const time = document.getElementById("modal-event-time").value.trim();
+      const venue = document.getElementById("modal-event-venue").value.trim();
+      const category = document.getElementById("modal-event-cat").value;
+
+      if (events.some(ev => ev.eventId === id)) {
+        showToast(`Event ID ${id} already exists in queue!`, "conflict");
+        return;
+      }
+
+      // Add and sort by date (Priority Queue)
+      events.push({ eventId: id, title, date, time, venue, category });
+      sortEvents();
+      saveState();
+      renderAll();
+      closeModal("eventModal");
+      document.getElementById("form-add-event").reset();
+      showToast(`Event queued chronologically by date!`, "success");
+    }
+
+    /* =========================================================================
+     * FILE EXPORT (Download college_mgmt.c directly)
+     * ========================================================================= */
+    function downloadCCode() {
+      // Fetch or generate the full C code
+      window.location.href = "college_mgmt.c";
+      showToast("Downloading college_mgmt.c file...", "info");
+    }
+
+    // Initialize application on window load
+    window.addEventListener("DOMContentLoaded", () => {
+      loadState();
+      renderAll();
+    });
+  </script>
+</body>
+</html>
