@@ -1,18 +1,25 @@
-# College Schedule, Event & Teacher Management System
+# 🎓 College Schedule, Event & Teacher Management System
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-Online%20App-brightgreen?style=for-the-badge&logo=githubpages&logoColor=white)](https://prabal07-va.github.io/college-management-system/)
+### 🔗 **Live Working Link:** [https://prabal07-va.github.io/college-management-system/](https://prabal07-va.github.io/college-management-system/)
+
+[![Open Live Project](https://img.shields.io/badge/🚀%20OPEN%20LIVE%20PROJECT-Click%20Here-success?style=for-the-badge&logo=googlechrome&logoColor=white)](https://prabal07-va.github.io/college-management-system/)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live%20Website-brightgreen?style=for-the-badge&logo=github&logoColor=white)](https://prabal07-va.github.io/college-management-system/)
 [![Language](https://img.shields.io/badge/Language-C%20(C99%2FC11)-00599C.svg?style=for-the-badge&logo=c)](college_mgmt.c)
 [![License](https://img.shields.io/badge/License-MIT-purple.svg?style=for-the-badge)](LICENSE)
-
-> A beginner-friendly Data Structures and Algorithms (DSA) project written in **Standard C (C99/C11)** accompanied by a **complete interactive Web Application frontend**.
 
 ---
 
 ## 🌐 Live Working Demo
 
-Access the fully functional live application directly in your web browser:
+You can launch and use the fully interactive web application directly in your web browser:
 
 👉 **[https://prabal07-va.github.io/college-management-system/](https://prabal07-va.github.io/college-management-system/)**
+
+| Resource | Direct Link |
+| :--- | :--- |
+| 🚀 **Live Web Application** | [https://prabal07-va.github.io/college-management-system/](https://prabal07-va.github.io/college-management-system/) |
+| 💻 **C Programming Source** | [`college_mgmt.c`](https://github.com/prabal07-va/college-management-system/blob/main/college_mgmt.c) |
+| 📁 **GitHub Repository** | [https://github.com/prabal07-va/college-management-system](https://github.com/prabal07-va/college-management-system) |
 
 > **Note:** Zero setup or installation required! The web app runs client-side with interactive timetable scheduling, conflict warning simulations, a dynamic Linked List memory visualizer, and in-browser C source code export.
 
