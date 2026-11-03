@@ -1,11 +1,20 @@
 # College Schedule, Event & Teacher Management System
 
-[![Language](https://img.shields.io/badge/Language-C%20(C99%2FC11)-00599C.svg)](https://en.wikipedia.org/wiki/C_(programming_language))
-[![Frontend](https://img.shields.io/badge/Frontend-HTML5%20%7C%20TailwindCSS%20%7C%20JS-38B2AC.svg)](index.html)
-[![License](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
-[![DSA](https://img.shields.io/badge/Focus-Data%20Structures%20%26%20Algorithms-success.svg)]()
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Online%20App-brightgreen?style=for-the-badge&logo=githubpages&logoColor=white)](https://prabal07-va.github.io/college-management-system/)
+[![Language](https://img.shields.io/badge/Language-C%20(C99%2FC11)-00599C.svg?style=for-the-badge&logo=c)](college_mgmt.c)
+[![License](https://img.shields.io/badge/License-MIT-purple.svg?style=for-the-badge)](LICENSE)
 
-> A beginner-friendly Data Structures and Algorithms (DSA) project written in **Standard C (C99/C11)** accompanied by a **complete interactive Web Application frontend (`index.html` / `college_management.html`)**.
+> A beginner-friendly Data Structures and Algorithms (DSA) project written in **Standard C (C99/C11)** accompanied by a **complete interactive Web Application frontend**.
+
+---
+
+## 🌐 Live Working Demo
+
+Access the fully functional live application directly in your web browser:
+
+👉 **[https://prabal07-va.github.io/college-management-system/](https://prabal07-va.github.io/college-management-system/)**
+
+> **Note:** Zero setup or installation required! The web app runs client-side with interactive timetable scheduling, conflict warning simulations, a dynamic Linked List memory visualizer, and in-browser C source code export.
 
 ---
 
@@ -27,7 +36,7 @@ It directly demonstrates three fundamental data structures:
 ```text
 college-management-system/
 ├── college_mgmt.c          # Complete C Source Code (Compilable, self-contained)
-├── index.html              # Main Web App Entry (GitHub Pages ready)
+├── index.html              # Main Web App Entry (GitHub Pages live app)
 ├── college_management.html # Standalone Web Application
 ├── README.md               # Full project documentation & Viva defense guide
 ├── .gitignore              # Ignores compiled binaries and persistent txt files
@@ -47,25 +56,25 @@ gcc -std=c99 -Wall -Wextra college_mgmt.c -o college_mgmt
 ```
 
 ### Execution
-- **On Linux / macOS:**
-  ```bash
-  ./college_mgmt
-  ```
 - **On Windows (PowerShell / Command Prompt):**
   ```powershell
   .\college_mgmt.exe
   ```
+- **On Linux / macOS:**
+  ```bash
+  ./college_mgmt
+  ```
 
 ---
 
-## 🌐 How to Use the Web Application
+## 💻 Web Application Features
 
-1. Open [`index.html`](index.html) or [`college_management.html`](college_management.html) in any modern web browser.
-2. **Dashboard**: View high-level metrics (Total Faculty, Matrix Occupancy %, Live Schedule).
-3. **Timetable Matrix**: Visual 5-Day &times; 5-Period grid. Click on any slot to view, book, or cancel.
-4. **Faculty Directory**: Shows cards with a live **Graphical Linked List Memory Visualizer** (`[HEAD] -> [Node] -> [NULL]`).
-5. **College Events**: Displays events strictly ordered by date in a chronological Priority Queue timeline.
-6. **DSA & C Architecture Tab**: Preview and download the C code directly from the browser, review time complexities, and study viva answers.
+1. **Dashboard Overview:** Real-time KPI counters (Total Faculty, Matrix Occupancy %, Live Schedule, Upcoming Events).
+2. **Timetable Matrix:** Interactive 5-Day &times; 5-Period grid. Click on any slot to view, book, or cancel.
+3. **Live Conflict Detection:** Immediate warning dialogs if a slot is already taken or if a faculty member is double-booked.
+4. **Faculty Directory:** Visual faculty cards with a **Live Graphical Linked List Memory Visualizer** (`[HEAD] -> [Node] -> [NULL]`).
+5. **College Events Timeline:** Chronological Priority Queue timeline with countdown badges.
+6. **DSA & C Architecture Tab:** Preview and download `college_mgmt.c` directly with asymptotic complexity reference.
 
 ---
 

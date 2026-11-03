@@ -118,6 +118,9 @@
 
       <!-- Action buttons -->
       <div class="flex items-center space-x-2">
+        <a href="https://github.com/prabal07-va/college-management-system" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-gray-800 hover:bg-gray-700 text-gray-200 transition border border-gray-700 flex items-center gap-1.5">
+          <i class="fa-brands fa-github text-sm"></i> GitHub
+        </a>
         <button onclick="resetDemoData()" title="Reset to Sample Data" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-800 hover:bg-gray-700 text-gray-300 transition border border-gray-700">
           <i class="fa-solid fa-rotate-right mr-1"></i> Reset Demo
         </button>
@@ -1348,9 +1351,27 @@ bool checkTeacherConflict(int teacherId, int day, int period) {
      * FILE EXPORT (Download college_mgmt.c directly)
      * ========================================================================= */
     function downloadCCode() {
-      // Fetch or generate the full C code
-      window.location.href = "college_mgmt.c";
-      showToast("Downloading college_mgmt.c file...", "info");
+      fetch("college_mgmt.c")
+        .then(response => {
+          if (!response.ok) throw new Error("File fetch failed");
+          return response.text();
+        })
+        .then(codeText => {
+          const blob = new Blob([codeText], { type: "text/x-csrc" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "college_mgmt.c";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          showToast("Downloaded college_mgmt.c successfully!", "success");
+        })
+        .catch(() => {
+          window.location.href = "college_mgmt.c";
+          showToast("Downloading college_mgmt.c file...", "info");
+        });
     }
 
     // Initialize application on window load
